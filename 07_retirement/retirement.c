@@ -70,5 +70,6 @@ void retirement (int startAge,   //in months
     int startAge = 327;
     double initial = 21345;
     retirement(startAge, initial, working, retired);
+    return EXIT_SUCCESS;
   }
  
