@@ -19,13 +19,15 @@ size_t maxSeq(int * array, size_t n)
 	}
       else
 	{
+	  if (maxCount > prevMaxCount)
 	      prevMaxCount = maxCount;
-	      maxCount = 1;
+	  
+	   maxCount = 1;
  	 }
 	  
 	 prevj = j;
       }
         
-   return prevMaxCount > maxCount ?prevMaxCount : maxCount ;
+   return prevMaxCount > maxCount ? prevMaxCount : maxCount;
 }
 
