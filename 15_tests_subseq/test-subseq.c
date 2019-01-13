@@ -5,7 +5,7 @@ size_t maxSeq(int * array, size_t n);
 
 int main()
 {
-  int array0[] = { };
+  int array0[] = {0};
   if (maxSeq(array0, 0)!=0)
   {
     printf("Failed on {} \n");
