@@ -10,7 +10,7 @@ void reverse(char * str) {
 
   char c;
   int i=0;
-  while (i<=len-1)
+  while (i<len-1)
     {
       // swap
       c = str[i];
