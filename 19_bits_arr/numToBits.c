@@ -10,8 +10,23 @@ int getNthBit(uint32_t number, int bit) {
   return (number & (1<<bit)) != 0;
 }
 
+// if nBits is larger than nNUms*32 then what would be remaining elements ?
 void numToBits(uint32_t * nums, int nNums, int * bits, int nBits) {
+  if (nBits < nNums*32)
+    {
+      printf("Invalid call to numToBits! nBits is %d, nNums is %d\n", nBits, nNums);
+      return;
+    }
 
+  uint32_t bit = 0;
+  for (int i=0; i<nNums; ++i)
+    {
+      uint32_t num = nums[i];
+      for (int j=31; j>=0; j--) // iterate each bit from MSB to LSB
+	{
+	  bits[bit++] = getNthBit(num, j);
+	}
+    }
 }
 
 void doTest(uint32_t * nums, int n) {
