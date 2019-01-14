@@ -1,0 +1,64 @@
+Grading at Mon Jan 14 17:20:53 UTC 2019
+**Testing broken implementation 10 **
+-------------------------------------
+
+Failed for power(10, 2)=10. Actual is: 100 
+
+**Testing broken implementation 11 **
+-------------------------------------
+
+Failed for power(10, 2)=4. Actual is: 100 
+
+**Testing broken implementation 1 **
+-------------------------------------
+
+Failed for power(10, 2)=1. Actual is: 100 
+
+**Testing broken implementation 2 **
+-------------------------------------
+
+Failed for power(10, 2)=1024. Actual is: 100 
+
+**Testing broken implementation 3 **
+-------------------------------------
+
+Failed for power(0, 0)=0. Actual is: 1 
+
+**Testing broken implementation 4 **
+-------------------------------------
+
+Failed for power(-1, 3)=65535. Actual is: -1 
+
+**Testing broken implementation 5 **
+-------------------------------------
+
+Failed for power(10, 2)=90. Actual is: 100 
+
+**Testing broken implementation 6 **
+-------------------------------------
+
+Failed for power(10, 2)=4. Actual is: 100 
+
+**Testing broken implementation 7 **
+-------------------------------------
+
+Failed for power(10, 2)=9. Actual is: 100 
+
+**Testing broken implementation 8 **
+-------------------------------------
+
+Failed for power(10, 2)=20. Actual is: 100 
+
+**Testing broken implementation 9 **
+-------------------------------------
+
+Failed for power(10, 2)=0. Actual is: 100 
+
+**Testing correct implementation **
+-------------------------------------
+
+
+All tests were ok.
+
+
+Overall Grade: PASSED
