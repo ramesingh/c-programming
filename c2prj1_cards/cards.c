@@ -59,7 +59,7 @@ char suit_letter(card_t c) {
 }
 
 void print_card(card_t c) {
-  printf("%c%c\n",value_letter(c), suit_letter(c));
+  printf("%c%c",value_letter(c), suit_letter(c));
 }
 
  static unsigned value_from_letter(char value_let) {
