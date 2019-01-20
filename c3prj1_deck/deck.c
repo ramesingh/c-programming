@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <time.h>
 #include "deck.h"
 void print_hand(deck_t * hand){
   if (hand==NULL)
@@ -31,8 +32,8 @@ int deck_contains(deck_t * d, card_t c) {
   card_t* t;
   for (int i=0; i<d->n_cards; ++i)
     {
-      t = hand->cards[i];
-      assert(c);
+      t = d->cards[i];
+      assert(t);
       if (are_cards_same(*t, c))
 	return 1;
     }
@@ -41,9 +42,40 @@ int deck_contains(deck_t * d, card_t c) {
 }
 
 void shuffle(deck_t * d){
+  if (d==NULL)
+    return;
+  
+   unsigned n = d->n_cards;
 
+  // generate randome numbers between 0 and n-1
+   //  srandom((unsigned int)time(NULL));
+
+  card_t* t;
+  int ri; // random index
+  for (int i=n-1; i>0; --i)
+  {
+    ri = random()%(i+1);
+
+    // swap the pointers at indexex i and ri
+    t = d->cards[i];
+    d->cards[i] = d->cards[ri];
+    d->cards[ri] = t;
+  }
 }
 
 void assert_full_deck(deck_t * d) {
+  if (d==NULL)
+    return;
 
+  assert(d->n_cards==52);
+  card_t c;
+  for(int i=0; i<d->n_cards; i++)
+    {
+      c = card_from_num(i);
+      if (deck_contains(d, c)==0)
+	{
+	  print_card(c);
+	  printf(" is not present in the deck!\n");
+	}
+    }
 }
