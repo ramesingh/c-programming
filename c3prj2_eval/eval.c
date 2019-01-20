@@ -4,21 +4,89 @@
 #include <assert.h>
 
 int card_ptr_comp(const void * vp1, const void * vp2) {
-  return 0;
+  const card_t * const *card1 = (const card_t* const*) vp1;
+  aseert(card1);
+  const card_t * const *card2 = (const card_t* const*) vp2
+  aseert(card2);
+  if (card1->value > card2->value)
+    return -1;
+  else if (card1->value == card2->value){
+    return card1->suit - card2->suit; // enum value of spade is 0 and club is 3
+  }
+  else
+    {
+      assert(card1->value < card2->value);
+      return 1;
+    }
+}
+
+static int is_flush_suit_of_type(deck_t *hand, suit_t s)
+{
+  assert(hand);
+  int count = 0;
+  card_t c;
+  for (int i=0; i<hand->n_cards; i++)
+    {
+      c = hand->cards[i];
+      if (c->suit == s)
+	count++;
+    }
+  return count >= 5 ? 1 : 0;
 }
 
 suit_t flush_suit(deck_t * hand) {
- return NUM_SUITS;
+  assert(hand==NULL);
+
+  if(is_flush_suit_of_type(hand, SPADES))
+    {
+      return SPADES;
+    }
+  else if(is_flush_suit_of_type(hand, HEARTS))
+    {
+      return HEARTS;
+    }
+  else if(is_flush_suit_of_type(hand, DIAMONDS))
+    {
+      return DIAMONDS;
+    }
+   else if(is_flush_suit_of_type(hand, CLUBS))
+    {
+      return CLUBS;
+    }
+    else
+      return NUM_SUITS;
 }
 
 unsigned get_largest_element(unsigned * arr, size_t n) {
- return 0;
+  assert(arr);
+  assert(n > 0);
+  unsigned largest = arr[0];
+  for (int i=1; i<n; i++)
+    {
+      if (arr[i] > max)
+	largest = arr[i];
+    }
+ return largest;
 }
 
 size_t get_match_index(unsigned * match_counts, size_t n,unsigned n_of_akind){
-
- return 0;
+  assert(match_counts);
+  assert(n>0);
+  size_t i = 0; // lowest index of n_of_akind
+  unsigned count = 1;
+  for (int j=1; j<n; j++)
+    {
+      if (match_counts[j] != match_counts[i])
+	{
+	  i = j;
+	  count = 1;
+	}
+      count++;
+    }
+  assert(count == n_of_akind); // we may break loop when count==n_of_akind
+  return i;
 }
+
 ssize_t  find_secondary_pair(deck_t * hand,
 			     unsigned * match_counts,
 			     size_t match_idx) {
