@@ -4,10 +4,12 @@
 #include <assert.h>
 
 int card_ptr_comp(const void * vp1, const void * vp2) {
-  const card_t * const *card1 = (const card_t* const*) vp1;
-  aseert(card1);
-  const card_t * const *card2 = (const card_t* const*) vp2
-  aseert(card2);
+  const card_t * const *c1 = (const card_t* const*) vp1;
+  assert(c1);
+  const card_t *card1 = *c1;
+  const card_t * const *c2 = (const card_t* const*) vp2;
+  assert(c2);
+  const card_t *card2 = *c2;
   if (card1->value > card2->value)
     return -1;
   else if (card1->value == card2->value){
@@ -24,7 +26,7 @@ static int is_flush_suit_of_type(deck_t *hand, suit_t s)
 {
   assert(hand);
   int count = 0;
-  card_t c;
+  card_t *c;
   for (int i=0; i<hand->n_cards; i++)
     {
       c = hand->cards[i];
@@ -63,7 +65,7 @@ unsigned get_largest_element(unsigned * arr, size_t n) {
   unsigned largest = arr[0];
   for (int i=1; i<n; i++)
     {
-      if (arr[i] > max)
+      if (arr[i] > largest)
 	largest = arr[i];
     }
  return largest;
@@ -81,19 +83,93 @@ size_t get_match_index(unsigned * match_counts, size_t n,unsigned n_of_akind){
 	  i = j;
 	  count = 1;
 	}
-      count++;
+      else
+	count++;
     }
   assert(count == n_of_akind); // we may break loop when count==n_of_akind
   return i;
 }
 
+// Assuming cards are already sorted
 ssize_t  find_secondary_pair(deck_t * hand,
 			     unsigned * match_counts,
 			     size_t match_idx) {
-  return -1;
+  if (hand==NULL)
+    return -1;
+  
+  assert(match_counts);
+
+  size_t i = match_idx + *match_counts; // lowest index of n_of_akind
+  card_t* c1 = hand->cards[i];
+  unsigned count = 1;
+  card_t *c2;
+  for (int j=i+1; j<hand->n_cards; j++)
+    {      
+      c2 = hand->cards[j];
+      if (c1->value != c2->value)
+	{
+	  c1 = c2;
+	  count = 1;
+	}
+      else
+	count++;
+    }
+  
+  return count > 1 ? i :  -1;
 }
 
 int is_straight_at(deck_t * hand, size_t index, suit_t fs) {
+  assert(hand);
+
+  size_t i = index;
+  card_t *c1 = hand->cards[i];
+  card_t *c2;
+  int count = 1;
+  for (int j=index+1; j<hand->n_cards; j++)
+    {
+      c2 = hand->cards[j];
+      if (c1->value == c2->value)
+	continue;      
+      else if (c1->value == (c2->value + 1))
+	{
+	  if (fs == NUM_SUITS) // any straight
+	    {
+	      count++;
+	      if (count==5)
+		return 1;
+	      c1 = c2;
+	    }
+	  else if (c1->suit == c2->suit) // straight flush
+	    {
+	      count++;
+	      if (count==5)
+		return 1;
+	      c1 = c2;	      
+	    }
+	  else
+	    return 0; // no straight
+	}
+      else if ((c2->value==2) && hand->cards[0]->value==VALUE_ACE) // Ace straight low. Ace is first in the sorted list
+	{
+	  // ACE will be the last card in the straight
+	  if (fs == NUM_SUITS) // any straight
+	    {
+	      count++;
+	      if (count==5)
+		return 1;
+	    }
+	  else // if (c1->suit == c2->suit) // straight flush
+	    {
+	      assert(c1->suit == c2->suit);
+	      count++;
+	      if (count==5)
+		return 1;
+	    }
+	    return 0; // no straight
+	}
+      else
+	return 0;
+    }
   return 0;
 }
 
@@ -103,12 +179,42 @@ hand_eval_t build_hand_from_match(deck_t * hand,
 				  size_t idx) {
 
   hand_eval_t ans;
+  ans.ranking = what;
+  int j = idx;
+  int i = 0; // i can be 0 to 4
+  for (; i<n && i < 5; i++,j++) // n should be less than or equal to 5
+    {
+      ans.cards[i] = hand->cards[j];
+    }
+  // fill remainder of the cards array
+  for (int k=0; i<4 && k<hand->n_cards;i++, k++)
+    {
+      if (hand->cards[k] != hand->cards[idx])
+	ans.cards[i] = hand->cards[k];
+    }
+  
   return ans;
 }
 
 
 int compare_hands(deck_t * hand1, deck_t * hand2) {
 
+  assert(hand1 && hand2);
+
+  // 1. sort the cards in decreasing order
+  // 2. Select 5 cards making a hand
+  // 3. Figure out the ranking of each hand
+  // 4. decide the winner by comparing the rankings
+  qsort(hand1, hand1->n_cards, sizeof(deck_t*), card_ptr_comp);
+  qsort(hand2, hand2->n_cards, sizeof(deck_t*), card_ptr_comp);
+
+  // TODO: create seaparate functions for each task
+  hand_ranking_t h1rank;
+  hand_ranking_t h2rank;
+  for (int i=0; i<hand1->n_cards-4; ++i)
+    {
+  int h1 = is_straight_at(hand1, i, SPADES); // checks straight flush or simple straight
+    }
   return 0;
 }
 
