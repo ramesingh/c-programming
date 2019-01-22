@@ -17,7 +17,7 @@ int card_ptr_comp(const void * vp1, const void * vp2) {
   }
   else
     {
-      assert(card1->value < card2->value);
+      //      assert(card1->value < card2->value);
       return 1;
     }
 }
@@ -37,7 +37,7 @@ static int is_flush_suit_of_type(deck_t *hand, suit_t s)
 }
 
 suit_t flush_suit(deck_t * hand) {
-  assert(hand==NULL);
+  //assert(hand==NULL);
 
   if(is_flush_suit_of_type(hand, SPADES))
     {
@@ -85,9 +85,10 @@ size_t get_match_index(unsigned * match_counts, size_t n,unsigned n_of_akind){
 	}
       else
 	count++;
+      if (count==n_of_akind)
+	return i;
     }
-  assert(count == n_of_akind); // we may break loop when count==n_of_akind
-  return i;
+  return i; // what if none found?
 }
 
 // Assuming cards are already sorted
@@ -108,14 +109,17 @@ ssize_t  find_secondary_pair(deck_t * hand,
       c2 = hand->cards[j];
       if (c1->value != c2->value)
 	{
+	  i = j;
 	  c1 = c2;
 	  count = 1;
 	}
       else
 	count++;
+      if (count ==2)
+	return i;
     }
   
-  return count > 1 ? i :  -1;
+  return -1;
 }
 
 int is_straight_at(deck_t * hand, size_t index, suit_t fs) {
@@ -196,24 +200,44 @@ hand_eval_t build_hand_from_match(deck_t * hand,
   return ans;
 }
 
+static void sort_hands(deck_t * hand1, deck_t * hand2) {
+  qsort(hand1->cards, hand1->n_cards, sizeof(card_t*), card_ptr_comp);
+  qsort(hand2->cards, hand2->n_cards, sizeof(card_t*), card_ptr_comp);
+}
 
+// return a positive number
+// if hand 1 is better, 0 if the hands tie, and a negative number
+// if hand 2 is better.
 int compare_hands(deck_t * hand1, deck_t * hand2) {
 
   assert(hand1 && hand2);
 
   // 1. sort the cards in decreasing order
+  sort_hands(hand1, hand2);
+  
   // 2. Select 5 cards making a hand
   // 3. Figure out the ranking of each hand
-  // 4. decide the winner by comparing the rankings
-  qsort(hand1, hand1->n_cards, sizeof(deck_t*), card_ptr_comp);
-  qsort(hand2, hand2->n_cards, sizeof(deck_t*), card_ptr_comp);
-
-  // TODO: create seaparate functions for each task
-  hand_ranking_t h1rank;
-  hand_ranking_t h2rank;
-  for (int i=0; i<hand1->n_cards-4; ++i)
+  hand_eval_t h1 = evaluate_hand(hand1);
+  hand_eval_t h2 = evaluate_hand(hand2);
+  hand_ranking_t h1Rank = h1.ranking;
+  hand_ranking_t h2Rank = h2.ranking;
+  if (h1Rank != h2Rank)
     {
-  int h1 = is_straight_at(hand1, i, SPADES); // checks straight flush or simple straight
+      // find winner using ranking
+      return h1Rank < h2Rank ? 1 : -1; 
+    }
+  else
+    {
+      card_t *card1;
+      card_t *card2;
+      for (int i=0; i<5; i++)
+	{
+	  //card_ptr_comp(h2.cards[i], h1.cards[i]);
+          card1 = h1.cards[i];
+	  card2 = h2.cards[i];
+	  if (card1->value != card2->value)
+	      return (card1->value - card2->value);
+	}
     }
   return 0;
 }
