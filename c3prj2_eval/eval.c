@@ -105,59 +105,73 @@ ssize_t  find_secondary_pair(deck_t * hand,
   return -1;
 }
 
-int is_straight_at(deck_t * hand, size_t index, suit_t fs) {
-  assert(hand);
-
+// returns 1 if found n length straight else 0
+int is_n_length_straight_at(deck_t * hand, size_t index, suit_t fs, int n) {
   size_t i = index;
   card_t *c1 = hand->cards[i];
-  card_t *c2;
+  card_t *c2 = NULL;
   int count = 1;
-  for (int j=index+1; j<hand->n_cards; j++)
+  for (int j=i+1; j<hand->n_cards; j++)
     {
       c2 = hand->cards[j];
-      if (c1->value == c2->value)
+      if (c1->value == c2->value) // equal card values
 	continue;      
+      //      else if ((c2->value==2) && hand->cards[0]->value==VALUE_ACE) // Ace straight low. Ace is first in the sorted list
+      //	{
+      //	}
       else if (c1->value == (c2->value + 1))
 	{
 	  if (fs == NUM_SUITS) // any straight
 	    {
 	      count++;
-	      if (count==5)
+	      if (count==n)
 		return 1;
-	      c1 = c2;
+	      else
+		c1 = c2;
 	    }
 	  else if (c1->suit == c2->suit) // straight flush
 	    {
 	      count++;
-	      if (count==5)
+	      if (count==n)
 		return 1;
-	      c1 = c2;	      
+	      else
+ 	        c1 = c2;	      
 	    }
 	  else
-	    return 0; // no straight
-	}
-      else if ((c2->value==2) && hand->cards[0]->value==VALUE_ACE) // Ace straight low. Ace is first in the sorted list
-	{
-	  // ACE will be the last card in the straight
-	  if (fs == NUM_SUITS) // any straight
-	    {
-	      count++;
-	      if (count==5)
-		return 1;
-	    }
-	  else // if (c1->suit == c2->suit) // straight flush
-	    {
-	      assert(c1->suit == c2->suit);
-	      count++;
-	      if (count==5)
-		return 1;
-	    }
-	    return 0; // no straight
+	    return 0; // no straight flush
 	}
       else
-	return 0;
+	return 0; // no straight
     }
   return 0;
+}
+
+// returns -1 if found ace-low straight else 0
+int is_ace_low_straight_at(deck_t * hand, size_t index, suit_t fs) {
+   for (int i=index; i<hand->n_cards; i++)
+  {
+      if (hand->cards[i]->value!=5)
+	  continue;
+      else if (is_n_length_straight_at(hand, i, fs, 4)) //card value ==5
+	{
+	  if (hand->cards[0]->value==VALUE_ACE)
+	    return -1;
+	}
+  }
+  return 0;
+}
+
+// Hand is sorted by value
+int is_straight_at(deck_t * hand, size_t index, suit_t fs) {
+  if (hand==NULL)
+    return 0;
+
+  if (is_n_length_straight_at(hand, index, fs, 5)==1)
+    return 1;
+  else if (is_ace_low_straight_at(hand, index, fs)==-1)
+    return -1;
+  else
+    return 0;
 }
 
 hand_eval_t build_hand_from_match(deck_t * hand,
