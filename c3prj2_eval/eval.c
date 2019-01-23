@@ -95,8 +95,10 @@ ssize_t  find_secondary_pair(deck_t * hand,
   
   assert(match_counts);
   for (int i=0; i<hand->n_cards; i++)
-    {      
-      if ((i!=match_idx) && match_counts[i]==2)
+    {
+      if ((i >= match_idx) && (i<(match_idx+match_counts[match_idx])))
+	continue;
+      else if (match_counts[i]>1)
 	return i;
     }
   
@@ -176,7 +178,7 @@ hand_eval_t build_hand_from_match(deck_t * hand,
   // fill remainder of the cards array into n-1 to 4
   for (int k=0; i<5 && k<hand->n_cards; k++)
     {
-      if (hand->cards[k]->value != hand->cards[idx]->value)
+      if ((i==0) || (hand->cards[k]->value != hand->cards[idx]->value))
 	ans.cards[i++] = hand->cards[k];
     }
   
