@@ -94,23 +94,9 @@ ssize_t  find_secondary_pair(deck_t * hand,
     return -1;
   
   assert(match_counts);
-
-  size_t i = match_idx + *match_counts; // lowest index of n_of_akind
-  card_t* c1 = hand->cards[i];
-  unsigned count = 1;
-  card_t *c2;
-  for (int j=i+1; j<hand->n_cards; j++)
+  for (int i=0; i<hand->n_cards; i++)
     {      
-      c2 = hand->cards[j];
-      if (c1->value != c2->value)
-	{
-	  i = j;
-	  c1 = c2;
-	  count = 1;
-	}
-      else
-	count++;
-      if (count ==2)
+      if ((i!=match_idx) && match_counts[i]==2)
 	return i;
     }
   
