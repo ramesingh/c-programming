@@ -13,7 +13,7 @@ int card_ptr_comp(const void * vp1, const void * vp2) {
   if (card1->value > card2->value)
     return -1;
   else if (card1->value == card2->value){
-    return card1->suit - card2->suit; // enum value of spade is 0 and club is 3
+    return card2->suit - card1->suit; // enum value of spade is 0 and club is 3
   }
   else
     {
