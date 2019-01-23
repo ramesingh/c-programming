@@ -17,7 +17,7 @@ int card_ptr_comp(const void * vp1, const void * vp2) {
   }
   else
     {
-      //      assert(card1->value < card2->value);
+      assert(card1->value < card2->value);
       return 1;
     }
 }
@@ -26,7 +26,7 @@ static int is_flush_suit_of_type(deck_t *hand, suit_t s)
 {
   assert(hand);
   int count = 0;
-  card_t *c;
+  card_t *c=NULL;
   for (int i=0; i<hand->n_cards; i++)
     {
       c = hand->cards[i];
@@ -37,7 +37,7 @@ static int is_flush_suit_of_type(deck_t *hand, suit_t s)
 }
 
 suit_t flush_suit(deck_t * hand) {
-  //assert(hand==NULL);
+  assert(hand);
 
   if(is_flush_suit_of_type(hand, SPADES))
     {
@@ -74,21 +74,16 @@ unsigned get_largest_element(unsigned * arr, size_t n) {
 size_t get_match_index(unsigned * match_counts, size_t n,unsigned n_of_akind){
   assert(match_counts);
   assert(n>0);
-  size_t i = 0; // lowest index of n_of_akind
-  unsigned count = 1;
-  for (int j=1; j<n; j++)
+  for (int j=0; j<n; j++)
     {
-      if (match_counts[j] != match_counts[i])
-	{
-	  i = j;
-	  count = 1;
+      if (match_counts[j]==n_of_akind)
+	{	  
+	    return j;
 	}
-      else
-	count++;
-      if (count==n_of_akind)
-	return i;
     }
-  return i; // what if none found?
+
+  assert(0); // forceful
+  return 0; // if none found?
 }
 
 // Assuming cards are already sorted
@@ -181,20 +176,22 @@ hand_eval_t build_hand_from_match(deck_t * hand,
 				  unsigned n,
 				  hand_ranking_t what,
 				  size_t idx) {
+  assert(hand!=NULL);
 
   hand_eval_t ans;
   ans.ranking = what;
   int j = idx;
   int i = 0; // i can be 0 to 4
-  for (; i<n && i < 5; i++,j++) // n should be less than or equal to 5
+  // fill 0 to n-1
+  for (; i<n; i++,j++) 
     {
       ans.cards[i] = hand->cards[j];
     }
-  // fill remainder of the cards array
-  for (int k=0; i<4 && k<hand->n_cards;i++, k++)
+  // fill remainder of the cards array into n-1 to 4
+  for (int k=0; i<5 && k<hand->n_cards; k++)
     {
-      if (hand->cards[k] != hand->cards[idx])
-	ans.cards[i] = hand->cards[k];
+      if (hand->cards[k]->value != hand->cards[idx]->value)
+	ans.cards[i++] = hand->cards[k];
     }
   
   return ans;
