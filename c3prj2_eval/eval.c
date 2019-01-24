@@ -147,7 +147,7 @@ int is_n_length_straight_at(deck_t * hand, size_t index, suit_t fs, int n) {
 int is_ace_low_straight_at(deck_t * hand, size_t index, suit_t fs) {
   if (is_n_length_straight_at(hand, index, fs, 4)) //card value ==5
     {
-      if (hand->cards[0]->value==VALUE_ACE)
+      //if (hand->cards[0]->value==VALUE_ACE)
 	return -1;
     }
   return 0;
@@ -162,9 +162,9 @@ int is_straight_at(deck_t * hand, size_t index, suit_t fs) {
     return 1;
   else if (index==0 && hand->cards[0]->value==VALUE_ACE)
     {
-      return is_ace_low_straight_at(hand, hand->n_cards - 4, fs);
+      if (hand->cards[hand->n_cards-4]->value==5)
+	return is_ace_low_straight_at(hand, hand->n_cards - 4, fs);
     }
-  else
     return 0;
 }
 
