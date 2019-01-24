@@ -106,42 +106,39 @@ ssize_t  find_secondary_pair(deck_t * hand,
 }
 
 // returns 1 if found n length straight else 0
+// hand already sorted
 int is_n_length_straight_at(deck_t * hand, size_t index, suit_t fs, int n) {
-  size_t i = index;
-  card_t *c1 = hand->cards[i];
+  card_t *c1 = hand->cards[index];
+  suit_t suitAtIndex = c1->suit;
   card_t *c2 = NULL;
   int count = 1;
-  for (int j=i+1; j<hand->n_cards; j++)
+  for (int j=index+1; j<hand->n_cards; j++)
     {
       c2 = hand->cards[j];
-      if (c1->value == c2->value) // equal card values
-	continue;      
-      //      else if ((c2->value==2) && hand->cards[0]->value==VALUE_ACE) // Ace straight low. Ace is first in the sorted list
-      //	{
-      //	}
-      else if (c1->value == (c2->value + 1))
+      if (c1->value == c2->value) // equal card values - could be straight
 	{
-	  if (fs == NUM_SUITS) // any straight
+	  if (fs == NUM_SUITS)
+	    continue;
+	  else if (c2->suit==suitAtIndex)
 	    {
 	      count++;
 	      if (count==n)
 		return 1;
-	      else
-		c1 = c2;
+	      c1=c2;
 	    }
-	  else if (c1->suit == c2->suit) // straight flush
+	}
+      else if (c1->value == (c2->value + 1)) // straight/straight flush
+	{
+	  if ((fs == NUM_SUITS) || (suitAtIndex == c2->suit) )
 	    {
 	      count++;
 	      if (count==n)
 		return 1;
-	      else
- 	        c1 = c2;	      
 	    }
-	  else
-	    return 0; // no straight flush
+	  c1 = c2; // next card may be of same value as current and suit as suitAtIndex
 	}
       else
-	return 0; // no straight
+	return 0; // no straight - break the loop early
     }
   return 0;
 }
