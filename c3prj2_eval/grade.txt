@@ -1,4 +1,4 @@
-Grading at Wed Jan 23 17:49:17 UTC 2019
+Grading at Thu Jan 24 14:01:30 UTC 2019
 Compiling your code
 rm test poker cards.o my-test-main.o *~
 Makefile:10: recipe for target 'clean' failed
@@ -40,9 +40,6 @@ Your file matched the expected output
  - Testcase passed
 Testcase 9: Trying hands with straight flushes
  Checking the output 
-Line_54_did_not_match
-Line_57_did_not_match
-Line_71_did_not_match
 Line_78_did_not_match
 Your file did not match the expected ouput
  - Output did not match, testcase failed
@@ -99,10 +96,10 @@ Hand 1:								Hand 1:
 Ac As Kc Ks Qs Js 0s 						Ac As Kc Ks Qs Js 0s 
  - Flush in suit s						 - Flush in suit s
  - Straight at index 0						 - Straight at index 0
- - Straight flush at index 1				      |	 - Straight at index 1
+ - Straight flush at index 1					 - Straight flush at index 1
  - The most of a kind is 2 of a kind (at index 0 / value A)	 - The most of a kind is 2 of a kind (at index 0 / value A)
  - Secondary pair at index 2 (value K)				 - Secondary pair at index 2 (value K)
- - evaluate_hand's ranking: STRAIGHT_FLUSH		      |	 - evaluate_hand's ranking: FLUSH
+ - evaluate_hand's ranking: STRAIGHT_FLUSH			 - evaluate_hand's ranking: STRAIGHT_FLUSH
  - 5 cards used for hand: As Ks Qs Js 0s 			 - 5 cards used for hand: As Ks Qs Js 0s 
 Hand 2:								Hand 2:
 --------							--------
@@ -116,7 +113,7 @@ Ad Kh Qh Jh Js 0h 9h 						Ad Kh Qh Jh Js 0h 9h
  - 5 cards used for hand: Kh Qh Jh 0h 9h 			 - 5 cards used for hand: Kh Qh Jh 0h 9h 
 Comparison : 							Comparison : 
 --------------							--------------
-Hand 1 wins!						      |	Hand 2 wins!
+Hand 1 wins!							Hand 1 wins!
 ============================					============================
 Hand 1:								Hand 1:
 --------							--------
